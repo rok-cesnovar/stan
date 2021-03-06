@@ -36,5 +36,5 @@ jobs:
           echo "CXX=clang++-${{ env.clangppVersion }}" >> make/local
           echo "O=0" >> make/local
           ls -l
-          ./runTests.py -j2 test/unit
+          python3 ./runTests.py -j2 test/unit
 
