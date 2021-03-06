@@ -117,17 +117,25 @@ def runTest(name):
 
 
 def findTests(base_path):
-    folders = filter(os.path.isdir, base_path)
-    nonfolders = list(set(base_path) - set(folders))
-    tests = nonfolders + [
-        os.path.join(root, n)
-        for f in folders
-        for root, _, names in os.walk(f)
-        for n in names
+    files = files_in_folder(base_path)
+    tests = [
+        for n in files
         if n.endswith(testsfx)
     ]
     return list(map(mungeName, tests))
 
+def files_in_folder(folder):
+    """Returns a list of files in the folder and all
+    its subfolders recursively. The folder can be
+    written with wildcards as with the Unix find command.
+    """
+    files = []
+    for f in glob.glob(folder):
+        if os.path.isdir(f):
+            files.extend(files_in_folder(f + os.sep + "**"))
+        else:
+            files.append(f)
+    return files
 
 def batched(tests):
     return [tests[i : i + batchSize] for i in range(0, len(tests), batchSize)]
